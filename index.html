@@ -1,21 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User List</title>
+</head>
 <body>
-  <h1>User List</h1>
-  <ul id="users"></ul>
+    <h1>User List</h1>
+    <p id="status">Loading users...</p>
+    <ul id="users"></ul>
 
-  <script>
-    // Fetch data from the Netlify Function endpoint
-    fetch('/.netlify/functions/api')
-      .then(res => res.json())
-      .then(users => {
-        const list = document.getElementById('users');
-        users.forEach(u => {
-          const li = document.createElement('li');
-          li.textContent = u.name;
-          list.appendChild(li);
+    <script>
+      const statusText = document.getElementById('status');
+      const userList = document.getElementById('users');
+
+      fetch('/.netlify/functions/api')
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+          }
+          return res.json();
+        })
+        .then(data => {
+          statusText.style.display = 'none'; // Clear loading text
+          data.forEach(u => {
+            const li = document.createElement('li');
+            li.textContent = `${u.name} - ${u.email}`;
+            userList.appendChild(li);
+          });
+        })
+        .catch(err => {
+          statusText.style.color = 'red';
+          statusText.textContent = 'Error: ' + err.message;
         });
-      });
-  </script>
+    </script>
 </body>
 </html>
