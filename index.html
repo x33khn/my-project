@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>User List</h1>
+  <ul id="users"></ul>
+
+  <script>
+    // Fetch data from the Netlify Function endpoint
+    fetch('/.netlify/functions/api')
+      .then(res => res.json())
+      .then(users => {
+        const list = document.getElementById('users');
+        users.forEach(u => {
+          const li = document.createElement('li');
+          li.textContent = u.name;
+          list.appendChild(li);
+        });
+      });
+  </script>
+</body>
+</html>
